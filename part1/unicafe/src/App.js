@@ -9,20 +9,24 @@ const App = () => {
   const [bad, setBad] = useState(0)
   const [score, setScore] = useState(0)
   // create class for objects with same format
-  function Feedback(text, count, setCount, score) {
-    this.text = text
-    this.count = count
-    this.setCount = setCount
-    this.score = score
+  class Feedback {
+    constructor(text, count, setCount, score) {
+      this.text = text
+      this.count = count
+      this.setCount = setCount
+      this.score = score
+    }
   }
   // create array of feedback objects for performing array methods
-  const feedbacks = [new Feedback("good", good, setGood, 1),
-  new Feedback("neutral", neutral, setNeutral, 0),
-  new Feedback("bad", bad, setBad, -1)]
+  const feedbacks = [
+    new Feedback('good', good, setGood, 1),
+    new Feedback('neutral', neutral, setNeutral, 0),
+    new Feedback('bad', bad, setBad, -1)
+  ]
   // prototypical property and method for shared data (score of all feedbacks and its accumulating method)
   Feedback.prototype.totalScore = score
   Feedback.prototype.setScore = setScore
-  
+
   return (
     // fragments as root element
     <>
