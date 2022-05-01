@@ -1,5 +1,6 @@
 const Notification = ({ message }) => {
-  const basicStyle = {
+  const style = {
+    color: message.type === 'error' ? 'red' : 'green',
     background: 'lightgrey',
     fontSize: 20,
     borderStyle: 'solid',
@@ -10,14 +11,7 @@ const Notification = ({ message }) => {
 
   return (
     Object.values(message).length > 0 && (
-      <div
-        style={
-          message.type === 'error'
-            ? { color: 'red', ...basicStyle }
-            : { color: 'green', ...basicStyle }
-        }>
-        {message.content}
-      </div>
+      <div style={style}>{message.content}</div>
     )
   )
 }
