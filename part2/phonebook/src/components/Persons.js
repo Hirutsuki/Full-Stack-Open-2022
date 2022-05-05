@@ -1,5 +1,5 @@
 const Persons = ({ persons, handleDelete }) =>
-  persons.map((person) => {
+  persons.map(person => {
     const { name, number, id } = person
     return (
       <div key={id}>

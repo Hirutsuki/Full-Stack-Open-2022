@@ -9,9 +9,7 @@ const App = () => {
   const [persons, setPersons] = useState([])
   useEffect(
     () =>
-      personService
-        .getAll()
-        .then((initialPersons) => setPersons(initialPersons)),
+      personService.getAll().then(initialPersons => setPersons(initialPersons)),
     []
   )
 
@@ -23,21 +21,28 @@ const App = () => {
     setTimeout(() => setMessage({}), 2000)
   }
 
-  const addPerson = (event) => {
+  const nameCapitalise = name =>
+    name
+      .split(' ')
+      .map(name => name.slice(0, 1).toUpperCase() + name.slice(1).toLowerCase())
+      .join(' ')
+
+  const addPerson = event => {
     event.preventDefault()
 
+    const capitalised = nameCapitalise(newName)
     const newPerson = {
-      name: newName,
-      number: newNumber,
+      name: capitalised,
+      number: newNumber
     }
 
     const foundMatch = persons.filter(
-      (person) => person.name.toUpperCase() === newPerson.name.toUpperCase()
+      person => person.name === newPerson.name
     )[0]
     if (foundMatch) {
       if (
         window.confirm(
-          `${newName} is already added to phonebook, replace the old number with a new one?`
+          `${newPerson.name} is already added to phonebook, replace the old number with a new one?`
         )
       ) {
         updatePerson(foundMatch.id, newPerson)
@@ -49,45 +54,48 @@ const App = () => {
     setNewNumber('')
   }
 
-  const createPerson = (newPerson) => {
-    personService.create(newPerson).then((returnedPerson) => {
-      setPersons(persons.concat(returnedPerson))
-      setMessage({ type: 'passed', content: `Added ${newPerson.name}` })
-      closeMessage()
-    })
+  const createPerson = newPerson => {
+    personService
+      .create(newPerson)
+      .then(createdPerson => {
+        setPersons(persons.concat(createdPerson))
+        setMessage({ type: 'passed', content: `Added ${newPerson.name}` })
+        closeMessage()
+      })
+      .catch(error => console.log(error.response.data))
   }
 
   const updatePerson = (id, newPerson) => {
     personService
       .update(id, newPerson)
-      .then((returnedPerson) => {
+      .then(returnedPerson => {
         setPersons(
-          persons.map((person) => (person.id !== id ? person : returnedPerson))
+          persons.map(person => (person.id !== id ? person : returnedPerson))
         )
         setMessage({
           type: 'passed',
-          content: `Updated ${newName}'s number`,
+          content: `Updated ${newPerson.name}'s number`
         })
         closeMessage()
       })
-      .catch((error) => {
+      .catch(error => {
         setMessage({
           type: 'error',
-          content: `Information of ${newName} has already been removed from server`,
+          content: `Information of ${newPerson.name} has already been removed from server`
         })
         closeMessage()
       })
   }
 
-  const deletePerson = (id) => {
+  const deletePerson = id => {
     personService
       .deleteById(id)
-      .then(setPersons(persons.filter((person) => person.id !== id && person)))
+      .then(setPersons(persons.filter(person => person.id !== id && person)))
   }
 
   const [query, setQuery] = useState('')
 
-  const handleInput = (event) => {
+  const handleInput = event => {
     // concatenate the string to dynamically call the state setting method
     eval(`set${event.target.name}(event.target.value)`)
   }
@@ -103,13 +111,13 @@ const App = () => {
   const inputs = [
     new Input('filter shown with ', query, 'Query'),
     new Input('name: ', newName, 'NewName'),
-    new Input('number: ', newNumber, 'NewNumber'),
+    new Input('number: ', newNumber, 'NewNumber')
   ]
   // add event handler for all input object as onChange property
-  inputs.map((input) => Object.assign(input, { onChange: handleInput }))
+  inputs.map(input => Object.assign(input, { onChange: handleInput }))
   const [queryInput, nameInput, numberInput] = inputs
 
-  const filtered = persons.filter((person) =>
+  const filtered = persons.filter(person =>
     person.name.toUpperCase().startsWith(query.toUpperCase())
   )
 

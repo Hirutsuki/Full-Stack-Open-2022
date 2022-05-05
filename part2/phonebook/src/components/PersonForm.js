@@ -1,6 +1,6 @@
 const PersonForm = ({ onSubmit, inputs }) => (
   <form onSubmit={onSubmit}>
-    {inputs.map((input) => {
+    {inputs.map(input => {
       const { label, value, name, onChange } = input
       return (
         <div key={name}>
