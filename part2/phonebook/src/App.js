@@ -7,11 +7,9 @@ import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
-  useEffect(
-    () =>
-      personService.getAll().then(initialPersons => setPersons(initialPersons)),
-    []
-  )
+  useEffect(() => {
+    personService.getAll().then(initialPersons => setPersons(initialPersons))
+  }, [])
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -62,7 +60,10 @@ const App = () => {
         setMessage({ type: 'passed', content: `Added ${newPerson.name}` })
         closeMessage()
       })
-      .catch(error => console.log(error.response.data))
+      .catch(error => {
+        setMessage({ type: 'error', content: error.response.data.error })
+        closeMessage()
+      })
   }
 
   const updatePerson = (id, newPerson) => {
@@ -79,10 +80,16 @@ const App = () => {
         closeMessage()
       })
       .catch(error => {
-        setMessage({
-          type: 'error',
-          content: `Information of ${newPerson.name} has already been removed from server`
-        })
+        const data = error.response.data
+        if (data === 'inexistent') {
+          setMessage({
+            type: 'error',
+            content: `Information of ${newPerson.name} has already been removed from the server`
+          })
+          setPersons(persons.filter(person => person.id !== id))
+        } else {
+          setMessage({ type: 'error', content: data.error })
+        }
         closeMessage()
       })
   }
@@ -117,9 +124,9 @@ const App = () => {
   inputs.map(input => Object.assign(input, { onChange: handleInput }))
   const [queryInput, nameInput, numberInput] = inputs
 
-  const filtered = persons.filter(person =>
-    person.name.toUpperCase().startsWith(query.toUpperCase())
-  )
+  const filtered = persons.filter(person => {
+    return person.name.toUpperCase().startsWith(query.toUpperCase())
+  })
 
   return (
     <div>
