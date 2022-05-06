@@ -68,7 +68,7 @@ const App = () => {
             content: `${newPerson.name} already in the phonebook, please refresh`
           })
         } else {
-          setMessage({ type: 'error', content: err.error })
+          setMessage({ type: 'error', content: err })
         }
         closeMessage()
       })
