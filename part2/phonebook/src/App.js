@@ -61,7 +61,15 @@ const App = () => {
         closeMessage()
       })
       .catch(error => {
-        setMessage({ type: 'error', content: error.response.data.error })
+        const err = error.response.data.error
+        if (err === 'existed name') {
+          setMessage({
+            type: 'error',
+            content: `${newPerson.name} already in the phonebook, please refresh`
+          })
+        } else {
+          setMessage({ type: 'error', content: err.error })
+        }
         closeMessage()
       })
   }
