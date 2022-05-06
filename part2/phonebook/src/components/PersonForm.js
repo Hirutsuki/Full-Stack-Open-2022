@@ -5,7 +5,7 @@ const PersonForm = ({ onSubmit, inputs }) => (
       return (
         <div key={name}>
           {label}
-          <input value={value} name={name} onChange={onChange} required />
+          <input value={value} name={name} onChange={onChange} />
         </div>
       )
     })}
