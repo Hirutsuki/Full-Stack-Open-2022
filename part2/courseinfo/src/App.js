@@ -25,7 +25,7 @@ const App = () => {
           name: 'Redux',
           exercises: 11,
           id: 4
-        },
+        }
       ]
     },
     {
@@ -41,7 +41,7 @@ const App = () => {
           name: 'Middlewares',
           exercises: 7,
           id: 2
-        },
+        }
       ]
     }
   ]
@@ -49,8 +49,8 @@ const App = () => {
   return (
     <>
       <h1>Web development curriculum</h1>
-      {courses.map((course) => (
-        <Course course={course} key={course.id} />
+      {courses.map(course => (
+        <Course key={course.id} course={course} />
       ))}
     </>
   )

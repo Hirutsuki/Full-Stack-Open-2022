@@ -11,27 +11,28 @@ const App = () => {
   const hook = () => {
     axios
       .get('https://restcountries.com/v3.1/all')
-      .then((response) => setCountries(response.data))
+      .then(response => setCountries(response.data))
   }
   useEffect(hook, [])
 
-  const handleQuery = (event) => {
+  const handleQuery = event => {
     setQuery(event.target.value)
   }
-  
-  const filtered = countries.filter((country) =>
+
+  const filtered = countries.filter(country =>
     country.name.common.toUpperCase().match(query.toUpperCase())
   )
 
-  const display = (countries) => {
+  const display = countries => {
     const len = countries.length
     if (query && len) {
       if (len === 1) {
-        return <>
-          <CountryInfo country={countries[0]} />
-          <Weather city={countries[0].capital} />
-        </>
-        
+        return (
+          <>
+            <CountryInfo country={countries[0]} />
+            <Weather city={countries[0].capital} />
+          </>
+        )
       } else if (len < 10) {
         return countries.map((country, index) => (
           <Country key={index} country={country} />

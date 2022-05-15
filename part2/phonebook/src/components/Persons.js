@@ -3,13 +3,8 @@ const Persons = ({ persons, handleDelete }) =>
     const { name, number, id } = person
     return (
       <div key={id}>
-        {name} {number}{' '}
-        <button
-          onClick={() => {
-            window.confirm(`Delete ${name}?`) && handleDelete(id)
-          }}>
-          delete
-        </button>
+        {name} {number}
+        <button onClick={() => handleDelete(id, name)}>delete</button>
       </div>
     )
   })

@@ -1,7 +1,3 @@
-const Header = ({ name }) => (
-  <>
-    <h2>{name}</h2>
-  </>
-)
+const Header = ({ name }) => <h2>{name}</h2>
 
 export default Header

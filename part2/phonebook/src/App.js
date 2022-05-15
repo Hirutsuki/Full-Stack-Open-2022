@@ -15,8 +15,9 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
 
   const [message, setMessage] = useState({})
-  const closeMessage = () => {
-    setTimeout(() => setMessage({}), 2000)
+  const notify = (type, content) => {
+    setMessage({ type, content })
+    setTimeout(() => setMessage({}), 3000)
   }
 
   const nameCapitalise = name =>
@@ -28,15 +29,12 @@ const App = () => {
   const addPerson = event => {
     event.preventDefault()
 
-    const capitalised = nameCapitalise(newName)
     const newPerson = {
-      name: capitalised,
+      name: nameCapitalise(newName),
       number: newNumber
     }
 
-    const foundMatch = persons.filter(
-      person => person.name === newPerson.name
-    )[0]
+    const foundMatch = persons.find(person => person.name === newPerson.name)
     if (foundMatch) {
       if (
         window.confirm(
@@ -57,8 +55,7 @@ const App = () => {
       .create(newPerson)
       .then(createdPerson => {
         setPersons(persons.concat(createdPerson))
-        setMessage({ type: 'passed', content: `Added ${newPerson.name}` })
-        closeMessage()
+        notify('passed', `Added ${newPerson.name}`)
       })
       .catch(error => {
         const err = error.response.data.error
@@ -68,9 +65,8 @@ const App = () => {
             content: `${newPerson.name} already in the phonebook, please refresh`
           })
         } else {
-          setMessage({ type: 'error', content: err })
+          notify('error', err)
         }
-        closeMessage()
       })
   }
 
@@ -81,11 +77,7 @@ const App = () => {
         setPersons(
           persons.map(person => (person.id !== id ? person : returnedPerson))
         )
-        setMessage({
-          type: 'passed',
-          content: `Updated ${newPerson.name}'s number`
-        })
-        closeMessage()
+        notify('passed', `Updated ${newPerson.name}'s number`)
       })
       .catch(error => {
         const data = error.response.data
@@ -96,16 +88,18 @@ const App = () => {
           })
           setPersons(persons.filter(person => person.id !== id))
         } else {
-          setMessage({ type: 'error', content: data.error })
+          notify('error', data.error)
         }
-        closeMessage()
       })
   }
 
-  const deletePerson = id => {
-    personService
-      .deleteById(id)
-      .then(setPersons(persons.filter(person => person.id !== id && person)))
+  const deletePerson = (id, name) => {
+    if (window.confirm(`Delete ${name}?`)) {
+      personService
+        .deleteById(id)
+        .then(setPersons(persons.filter(person => person.id !== id && person)))
+      notify('passed', `Deleted ${name}`)
+    }
   }
 
   const [query, setQuery] = useState('')
