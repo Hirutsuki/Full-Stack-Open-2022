@@ -4,18 +4,13 @@ const Blog = require('../models/blog')
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
   const user = request.user
+  const blog = new Blog({ ...body, user: user._id })
+  savedBlog = await blog.save()
 
-  if (body.title && body.url) {
-    const blog = new Blog({ ...body, user: user._id })
-    savedBlog = await blog.save()
+  user.blogs = user.blogs.concat(savedBlog._id)
+  await user.save()
 
-    user.blogs = user.blogs.concat(savedBlog._id)
-    await user.save()
-
-    response.status(201).json(savedBlog)
-  } else {
-    response.status(400).json({ error: 'blog must have a title and an URL' })
-  }
+  response.status(201).json(savedBlog)
 })
 
 blogsRouter.get('/', async (request, response) => {
@@ -49,16 +44,14 @@ blogsRouter.put('/:id', async (request, response) => {
 blogsRouter.delete('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
   if (!blog) {
-    return response.status(404).json({
-      error: 'no blog found'
-    })
+    return response.status(204).end()
   }
 
   if (blog.user.toString() === request.user._id.toString()) {
     await blog.delete()
     response.status(204).end()
   } else {
-    response.status(401).json({ error: 'cannot delete a blog you do not own' })
+    response.status(401).json({ error: 'only the creator can delete the blog' })
   }
 })
 

@@ -20,11 +20,11 @@ const mostBlogs = blogs => {
   if (blogs.length === 0) {
     return null
   }
-  const countedPairs = _.countBy(blogs, 'author')
-  const mappedArr = Object.keys(countedPairs).map(author => {
-    return { author, blogs: countedPairs[author] }
+  const grouppedPairs = _.groupBy(blogs, 'author')
+  const countedGroups = Object.keys(grouppedPairs).map(author => {
+    return { author, blogs: grouppedPairs[author].length }
   })
-  return _.maxBy(mappedArr, 'blogs')
+  return _.maxBy(countedGroups, 'blogs')
 }
 
 const mostLikes = blogs => {
