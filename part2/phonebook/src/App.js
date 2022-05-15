@@ -131,7 +131,7 @@ const App = () => {
   })
 
   return (
-    <div>
+    <>
       <h2>Phonebook</h2>
       <Notification message={message} />
       <Filter input={queryInput} />
@@ -139,7 +139,7 @@ const App = () => {
       <PersonForm onSubmit={addPerson} inputs={[nameInput, numberInput]} />
       <h3>Numbers</h3>
       <Persons persons={filtered} handleDelete={deletePerson} />
-    </div>
+    </>
   )
 }
 
