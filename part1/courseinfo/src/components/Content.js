@@ -1,9 +1,11 @@
-import Part from "./Part";
+import Part from './Part'
 
 const Content = ({ parts }) => (
-        <>
-            {parts.map(part => <Part part={part} />)}
-        </>
-    )
+  <>
+    {parts.map((part, index) => (
+      <Part key={index} part={part} />
+    ))}
+  </>
+)
 
-export default Content;
+export default Content

@@ -1,9 +1,9 @@
 import { useState } from 'react'
 
-const Anecdote = ({ index, anecdotes, points }) => (
+const Anecdote = ({ anecdote, point }) => (
   <>
-    <div>{anecdotes[index]}</div>
-    <div>has {points[index]} votes</div>
+    <div>{anecdote}</div>
+    <div>has {point} votes</div>
   </>
 )
 
@@ -23,27 +23,37 @@ const App = () => {
   const [selected, setSelected] = useState(random())
   // fill point-tracking array with 0
   const [points, setPoints] = useState(Array(anecdotes.length).fill(0))
-  const handleVote = (index) => () => {
-    const temp = [...points]
-    temp[index]++
-    setPoints(temp)
+  const handleVote = () => {
+    const newPoints = [...points]
+    newPoints[selected]++
+    setPoints(newPoints)
+  }
+
+  const handleNext = () => {
+    let newSelected = random()
+    while (newSelected === selected) {
+      newSelected = random()
+    }
+    setSelected(newSelected)
   }
   const totalPoint = points.reduce((sum, point) => sum + point)
   // find the largest point
   const max = Math.max.apply(this, points)
   // find the first index of the largest point
   const maxIndex = points.findIndex(point => point === max)
-  
+
   return (
     <>
       <h1>Anecdote of the day</h1>
-      <Anecdote index={selected} anecdotes={anecdotes} points={points} />
-      <button onClick={handleVote(selected)}>vote</button>
-      <button onClick={() => setSelected(random())}>next anecdote</button>
+      <Anecdote anecdote={anecdotes[selected]} point={points[selected]} />
+      <button onClick={handleVote}>vote</button>
+      <button onClick={handleNext}>next anecdote</button>
 
       <h1>Anecdote with most votes</h1>
       {/* conditionally render best quote when at least 1 vote has been made */}
-      {totalPoint > 0 && <Anecdote index={maxIndex} anecdotes={anecdotes} points={points} />}
+      {totalPoint > 0 && (
+        <Anecdote anecdote={anecdotes[maxIndex]} point={points[maxIndex]} />
+      )}
     </>
   )
 }
